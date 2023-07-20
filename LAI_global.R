@@ -3,7 +3,7 @@ require(maps)
 require(rgdal)
 require(raster)
 #find all ncs in your directory
-dir<-"/Volumes/WD_BLACK/LAI"
+dir<-"YOUR WD HERE"
 #get a list of all files with LAI in the name in your directory
 files<-list.files(path=dir, pattern='.nc', full.names = TRUE)
 #for calls
@@ -27,7 +27,7 @@ for (file in files){ #this loop translates netcdf stored info into rasters
 #averages cell wise
 rs1 <- calc(temp,mean,na.rm=TRUE)
 #fix extent and resolution to match the other rasters used
-MAP<-raster("/Users/eronraines/Desktop/Chapter 3 data/Rasters_for_analysis/MAP_global.tif")
+MAP<-raster("YOUR WD HERE/MAP_global.tif")
 rs1 <- resample(rs1,MAP)
 #clip to terrestrial surface (have to run Global parameters.R first)
 rs2 <- mask(rs1,land)
@@ -39,4 +39,4 @@ plot(rs2, col =hcl.colors(12*10,"Temps"),
      useRaster=F)
 map("world",add=T,fill=FALSE,lwd=0.1)
 mtext(expression(paste("leaf-m"^2,"soil-m"^-2,sep="")),4,5)
-writeRaster(rs2,"/Users/eronraines/Desktop/Chapter 3 data/Rasters_for_analysis/LAI_global.tif")
+writeRaster(rs2,"YOUR WD HERE/LAI_global.tif")
