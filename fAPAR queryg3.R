@@ -9,11 +9,11 @@ gc()
 # devtools::install_github("bluegreen-labs/ecmwfr")
 
 # your keys please
-ecmwfr::wf_set_key(user = "150503",
-                   key = "2c24fcba-0fba-4181-88f5-59d3606d87f4",
+ecmwfr::wf_set_key(user = "USER DEFINED",
+                   key = "USER DEFINED",
                    service = "cds")
 # this sets where the downloaded data will be stored
-dir <-"/Volumes/WD_BLACK/fAPAR"
+dir <-"USER DEFINED"
 setwd(dir)
 
 request <- list(
