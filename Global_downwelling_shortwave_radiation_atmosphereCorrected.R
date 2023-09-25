@@ -3,8 +3,8 @@ require(maps)
 require(rgdal)
 require(raster)
 #find all ncs in your directory
-dir<-"/Volumes/WD_BLACK/LAI"
-#get a list of all files with LAI in the name in your directory
+dir<-"/Users/eronraines/Desktop/Chapter 3 data/SDSF"
+#get a list of all files with ndvi in the name in your directory
 files<-list.files(path=dir, pattern='.nc', full.names = TRUE)
 #for calls
 setwd(dir)
@@ -13,30 +13,37 @@ k = 1 # organization index
 for (file in files){ #this loop translates netcdf stored info into rasters
   print(k) #sometimes, you just gotta know...
   if(k==1){
-    temp <- brick(file,varname="LAI")
+    temp <- brick(file,varname="SIS")
   }
   if(k!=1){
-    temp2 <-brick(file,varname="LAI")
+    temp2 <-brick(file,varname="SIS")
     temp <- stack(temp,temp2)
   }
   k = k + 1
 }
-
-# #removes NAs
-# temp[temp==65535] <-NA
-#averages cell wise
+k = k - 1 # will be one extra so deal with it
+for (i in 1:k){ # this loop places NAs where they're flagged
+  print(i)#something real pretty to look at
+  temp[[i]][temp[[i]]==1e+30] <- NA # na values are set to 1e+30, this replaces them
+}
+#removes NAs 
 rs1 <- calc(temp,mean,na.rm=TRUE)
-#fix extent and resolution to match the other rasters used
+# fix extent
 MAP<-raster("/Users/eronraines/Desktop/Chapter 3 data/Rasters_for_analysis/MAP_global.tif")
 rs1 <- resample(rs1,MAP)
+
 #clip to terrestrial surface (have to run Global parameters.R first)
 rs2 <- mask(rs1,land)
 #plot that mess
+
 plot(rs2, col =hcl.colors(12*10,"Temps"),
-     plot.title = title(main = "Leaf Area Index"),
+     plot.title = title(main = "Mean Annual Downwelling Shortwave Radation"),
      xlab = "Longitude",
      ylab = "Latitude",
      useRaster=F)
-map("world",add=T,fill=FALSE,lwd=0.1)
-mtext(expression(paste("leaf-m"^2,"soil-m"^-2,sep="")),4,5)
-writeRaster(rs2,"/Users/eronraines/Desktop/Chapter 3 data/Rasters_for_analysis/LAI_global.tif")
+# map("world",add=T,fill=FALSE)
+mtext(expression("W m"^-2),4,5)
+writeRaster(rs2,"/Users/eronraines/Desktop/Chapter 3 data/Rasters_for_analysis/MADSR_global.tif")
+
+
+
